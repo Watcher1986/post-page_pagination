@@ -42,27 +42,28 @@ export const deletePost = createAsyncThunk(
   },
 );
 
-export const toggleStatus = createAsyncThunk(
-  'todos/toggleStatus',
-  async function (id, { rejectWithValue, dispatch, getState }) {
-    const todo = getState().todos.todos.find(todo => todo.id === id);
+export const editCurrPost = createAsyncThunk(
+  'posts/editCurrPost',
+  async function ({ id, title, text }, { rejectWithValue, dispatch, getState }) {
+    const post = getState().posts.posts.find(post => post.id === id);
 
     try {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          completed: !todo.completed,
+          title,
+          body: text,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Can't toggle status. Server error.");
+        throw new Error("Can't update post. Server error.");
       }
 
-      dispatch(toggleComplete({ id }));
+      dispatch(editPost(id, title, text));
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -71,12 +72,13 @@ export const toggleStatus = createAsyncThunk(
 
 export const addNewPost = createAsyncThunk(
   'todos/addNewTodo',
-  async function (text, { rejectWithValue, dispatch }) {
+  async function (title, text, { rejectWithValue, dispatch }) {
     try {
       const todo = {
-        title: text,
+        title,
         userId: 1,
         id: new Date().toISOString(),
+        body: text,
       };
 
       const response = await fetch('https://jsonplaceholder.typicode.com/todos', {
@@ -115,6 +117,11 @@ const postsSlice = createSlice({
     addPost(state, action) {
       state.posts.push(action.payload);
     },
+    editPost(state, action) {
+      const currentPost = state.posts.find(post => post.id === action.payload.id);
+      currentPost.title = action.payload.title;
+      currentPost.body = action.payload.text;
+    },
     findPosts(state, action) {
       state.posts = state.posts.filter(post => post.title.includes(action.payload.text));
     },
@@ -133,10 +140,10 @@ const postsSlice = createSlice({
     },
     [fetchPosts.rejected]: setError,
     [deletePost.rejected]: setError,
-    [toggleStatus.rejected]: setError,
+    [editCurrPost.rejected]: setError,
   },
 });
 
-export const { addPost, findPosts, removePost } = postsSlice.actions;
+export const { addPost, findPosts, removePost, editPost } = postsSlice.actions;
 
 export default postsSlice.reducer;
