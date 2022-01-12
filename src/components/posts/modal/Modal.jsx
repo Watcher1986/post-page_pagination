@@ -9,29 +9,35 @@ const Modal = ({ setIsModal, id }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className="modal_form">
-      <div className="modal_form-header">
-        <span className="modal_form-name">Post editing</span>
-        <span className="modal_form-close" onClick={() => setIsModal(false)}>
+    <div className="modal-form">
+      <div className="modal-form__header">
+        <span className="modal-form__name">Post editing</span>
+        <span className="modal-form__close" onClick={() => setIsModal(false)}>
           &times;
         </span>
       </div>
-      <input
-        className="modal_form-input"
-        type="text"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
-      <textarea
-        value={text}
-        onChange={e => setText(e.target.value)}
-        className="modal_form-txa"
-        name="post"
-        id="post"
-        cols="30"
-        rows="10"
-      ></textarea>
-      <span className="modal_form-btn" onClick={() => dispatch(editCurrPost(id, title, text))}>
+      <div className="modal-form__block">
+        <label className="modal-form__label" htmlFor="title">Title</label>
+        <input
+          className="modal-form__input"
+          type="text"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+        />
+      </div>
+      <div className="modal-form__block">
+        <label className="modal-form__label" htmlFor="maintext">Main text</label>
+        <textarea
+          value={text}
+          onChange={e => setText(e.target.value)}
+          className="modal-form__txa"
+          name="post"
+          id="post"
+          cols="30"
+          rows="10"
+        />
+      </div>
+      <span className="modal-form__btn" onClick={() => dispatch(editCurrPost(id, title, text))}>
         Submit editing
       </span>
     </div>

@@ -2,17 +2,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
-  async function (text, { rejectWithValue, dispatch }) {
+  async function (_, { rejectWithValue }) {
     try {
       const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
       if (!response.ok) {
         throw new Error('Server Error!');
       }
-
-      // if (text != '' || undefined) {
-      //   dispatch(findPosts(text));
-      // }
 
       const data = await response.json();
 
@@ -44,8 +40,8 @@ export const deletePost = createAsyncThunk(
 
 export const editCurrPost = createAsyncThunk(
   'posts/editCurrPost',
-  async function ({ id, title, text }, { rejectWithValue, dispatch, getState }) {
-    const post = getState().posts.posts.find(post => post.id === id);
+  async function (id, title, text, { rejectWithValue, dispatch, getState }) {
+    // const post = getState().posts.posts.find(post => post.id === id);
 
     try {
       const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
@@ -63,7 +59,7 @@ export const editCurrPost = createAsyncThunk(
         throw new Error("Can't update post. Server error.");
       }
 
-      dispatch(editPost(id, title, text));
+      dispatch(editPost({ id, title, text }));
     } catch (error) {
       return rejectWithValue(error.message);
     }

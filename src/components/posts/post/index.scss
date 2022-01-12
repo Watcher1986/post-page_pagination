@@ -28,6 +28,10 @@
     // text-decoration: underline;
   }
 
+  &-title:hover {
+    text-decoration: underline;
+  }
+
   &-body {
     font-size: 18px;
     padding: 8px;

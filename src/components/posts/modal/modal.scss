@@ -1,4 +1,4 @@
-.modal_form {
+.modal-form {
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -6,30 +6,30 @@
   border-radius: 3px;
   margin-bottom: 8px;
 
-  &-header {
+  &__header {
     display: flex;
     justify-content: space-between;
     margin: 6px;
   }
 
-  &-name {
+  &__name {
     text-transform: uppercase;
     font-size: 22px;
     font-weight: 700;
   }
 
-  &-input {
+  &__input {
     margin-bottom: 8px;
     height: 24px;
     border-radius: 4px;
   }
 
-  &-txa {
+  &__txa {
     margin-bottom: 8px;
     border-radius: 4px;
   }
 
-  &-btn {
+  &__btn {
     border: 2px solid teal;
     border-radius: 6px;
     margin: 8px 0;
@@ -40,11 +40,23 @@
     cursor: pointer;
   }
   
-  &-close {
+  &__close {
     font-size: 1.2rem;
     font-weight: 700;
     padding: 4px;
     cursor: pointer;
     margin-bottom: 4px;
+  }
+
+  &__block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    padding: 4px;
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0.8;
   }
 }

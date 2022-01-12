@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { BrowserRouter, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchPosts, findPosts, removePost  } from './store/postsSlice';
+import { fetchPosts, findPosts, removePost } from './store/postsSlice';
 import Main from './components/posts/Main';
 import PostsForm from './components/posts/postsForm/PostsForm';
 
