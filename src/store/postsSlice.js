@@ -1,27 +1,28 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable consistent-return */
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getPostsFromStorage } from '../utils/utils';
 
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
-  async function (_, { rejectWithValue }) {
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-      if (!response.ok) {
-        throw new Error('Server Error!');
-      }
-
-      const data = await response.json();
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    if (!response.ok) {
+      throw new Error('Server Error!');
     }
-  },
-);
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
-  async function (id, { rejectWithValue, dispatch }) {
+  async (id, { rejectWithValue, dispatch }) => {
     try {
       const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
         method: 'DELETE',
@@ -40,8 +41,9 @@ export const deletePost = createAsyncThunk(
 
 export const editCurrPost = createAsyncThunk(
   'posts/editCurrPost',
-  async function (id, title, text, { rejectWithValue, dispatch, getState }) {
+  async (data, { rejectWithValue, dispatch }) => {
     // const post = getState().posts.posts.find(post => post.id === id);
+    const { id, title, text } = data;
 
     try {
       const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
@@ -67,22 +69,22 @@ export const editCurrPost = createAsyncThunk(
 );
 
 export const addNewPost = createAsyncThunk(
-  'todos/addNewTodo',
-  async function (title, text, { rejectWithValue, dispatch }) {
+  'posts/addNewPost',
+  async (postData, { rejectWithValue, dispatch }) => {
+    const { title, body, userId } = postData;
     try {
-      const todo = {
+      const post = {
         title,
-        userId: 1,
-        id: new Date().toISOString(),
-        body: text,
+        userId,
+        body,
       };
 
-      const response = await fetch('https://jsonplaceholder.typicode.com/todos', {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(todo),
+        body: JSON.stringify(post),
       });
 
       if (!response.ok) {
@@ -90,7 +92,7 @@ export const addNewPost = createAsyncThunk(
       }
 
       const data = await response.json();
-      dispatch(addTodo(data));
+      dispatch(addPost(data));
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -106,6 +108,8 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState: {
     posts: [],
+    currentPage: 1,
+    itemsPerPage: 10,
     status: null,
     error: null,
   },
@@ -119,27 +123,51 @@ const postsSlice = createSlice({
       currentPost.body = action.payload.text;
     },
     findPosts(state, action) {
-      state.posts = state.posts.filter(post => post.title.includes(action.payload.text));
+      // const { posts } = getPostsFromStorage();
+      state.posts.filter(post => post.title.includes(action.payload.text));
     },
     removePost(state, action) {
-      state.posts = state.posts.filter(post => post.id !== action.payload.id);
+      const { posts } = getPostsFromStorage();
+      const filteredPosts = posts.filter(post => post.id !== action.payload.id);
+      state.posts = filteredPosts;
+    },
+    incrementCurPage(state) {
+      state.currentPage += 1;
+    },
+    decrementCurPage(state) {
+      state.currentPage -= 1;
+    },
+    setCurrentPage(state, action) {
+      state.currentPage = action.payload;
     },
   },
   extraReducers: {
     [fetchPosts.pending]: state => {
       state.status = 'loading';
       state.error = null;
+      state.itemsPerPage = 10;
+      state.currentPage = 1;
     },
     [fetchPosts.fulfilled]: (state, action) => {
       state.status = 'resolved';
       state.posts = action.payload;
+      state.currentPage = 1;
     },
     [fetchPosts.rejected]: setError,
     [deletePost.rejected]: setError,
     [editCurrPost.rejected]: setError,
+    [addNewPost.rejected]: setError,
   },
 });
 
-export const { addPost, findPosts, removePost, editPost } = postsSlice.actions;
+export const {
+  addPost,
+  findPosts,
+  removePost,
+  editPost,
+  incrementCurPage,
+  decrementCurPage,
+  setCurrentPage,
+} = postsSlice.actions;
 
 export default postsSlice.reducer;
