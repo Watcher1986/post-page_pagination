@@ -1,10 +1,13 @@
 # post-page_pagination
+## [Project Link](https://posts-page-pagination.netlify.app/)
 
+---
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/32fcc6cb-fd29-41f4-a924-c091822bbf33/deploy-status)](https://app.netlify.com/sites/posts-page-pagination/deploys)
 #### To itstall the project run [npm i(or install)]
 
 #### To run project run command in terminal [npm run dev]
 
-## [Project Link](https://nextjs-blog-kappa-sooty-16.vercel.app/)
 
 ---
 
@@ -23,7 +26,7 @@
 
 ## Description
 
-Simple blog page created with Next.js
+Simple posts page with pagination , with posibilities of editing , add new ,delete and find certain posts .
 
 #### Technologies
 
